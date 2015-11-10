@@ -1,0 +1,86 @@
+import discord
+import random
+
+email = "imapikamew@gmail.com"
+password = "kitty"
+
+client = discord.Client()
+client.login(email, password)
+KITTIES = [ ]
+MONKEYS = [ ]
+
+def readFile(filename, mode="rt"):
+    with open(filename, mode) as fin:
+        return fin.read()
+
+def loadKitties():
+    fp = "kitties.txt"
+    contents = readFile(fp)
+    for img in contents.split():
+        KITTIES.append(img)
+
+def isValidMonkeyLink(url):
+    return url.startswith('http')
+
+def loadMonkeys():
+    dp = "monkeys.txt"
+    contents = readFile(dp)
+    for img in contents.split():
+        if isValidMonkeyLink(img):
+            index = img.find('\\')
+            if index != -1:
+                img = img[:index]
+            MONKEYS.append(img)
+
+def sendHelp(message):
+    helpMessage = """
+    !kitty
+    !monkey
+    !twin
+    !fight me
+    !hi
+    !ping
+    !what is obscene?
+    !ohno
+    !omg
+    !sleepy
+    !help
+
+    """
+    client.send_message(message.channel, helpMessage)
+
+@client.event
+def on_message(message):
+    if message.content.startswith('!kitty'):
+        client.send_message(message.channel, random.choice(KITTIES))
+    elif message. content.startswith('!monkey'):
+        client.send_message(message.channel, random.choice(MONKEYS))
+    elif message.content.startswith('!twin'):
+        client.send_message(message.channel, 'TWIN!')
+    elif message.content.startswith('!fight me'):
+        client.send_message(message.channel, 'No, you suck.')
+    elif message.content.startswith('!hi'):
+        client.send_message(message.channel, 'Ohey qt ;)')
+    elif message.content.startswith('!ping'):
+        client.send_message(message.channel, 'pong!')
+    elif message.content.startswith('!what is obscene?'):
+        client.send_message(message.channel, 'The scum of the earth!')
+    elif message.content.startswith('!ohno'):
+        client.send_message(message.channel, 'http://www.pride.com/sites/pride.com/files/money.gif')
+    elif message.content.startswith('!omg'):
+        client.send_message(message.channel, 'http://www.reactiongifs.com/r/cat.gif')
+    elif message.content.startswith('!sleepy'):
+        client.send_message(message.channel, 'http://4.bp.blogspot.com/-ZbAUW5sWdW4/UW7hYVImS0I/AAAAAAAAhy4/3hd093TM44g/s1600/funny-cat-gifs-046-003.gif')
+    elif message.content.startswith('!help'):
+        sendHelp(message)
+
+@client.event
+def on_ready():
+    print('Logged in as')
+    print(client.user.name)
+    print(client.user.id)
+    print('------')
+
+loadMonkeys()
+loadKitties()
+client.run()
